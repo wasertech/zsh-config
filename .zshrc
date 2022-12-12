@@ -1,10 +1,10 @@
 # Use powerline
 USE_POWERLINE="true"
-# Source manjaro-zsh-configuration
-if [[ -e /usr/share/zsh/manjaro-zsh-config ]]; then
-  source /usr/share/zsh/manjaro-zsh-config
+# Source singularity-zsh-configuration
+if [[ -e /usr/share/zsh/singularity-zsh-config ]]; then
+  source /usr/share/zsh/singularity-zsh-config
 fi
-# Use manjaro zsh prompt
-if [[ -e /usr/share/zsh/manjaro-zsh-prompt ]]; then
-  source /usr/share/zsh/manjaro-zsh-prompt
+# Use singularity zsh prompt
+if [[ -e /usr/share/zsh/singularity-zsh-prompt ]]; then
+  source /usr/share/zsh/singularity-zsh-prompt
 fi

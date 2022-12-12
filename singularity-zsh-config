@@ -54,11 +54,8 @@ bindkey '^[[1;5C' forward-word                                  #
 bindkey '^H' backward-kill-word                                 # delete previous word with ctrl+backspace
 bindkey '^[[Z' undo                                             # Shift+tab undo last action
 
-## Alias section 
-alias cp='f(){fo=${1:--i}; shift; cp $fo $*};f'                                           # Confirm before overwriting something
-alias df='f(){if test $# -eq 0;then opts=(-h);else opts=("$@");fi; df "$opts[@]"};f'      # Human-readable sizes
-alias free='f(){if test $# -eq 0;then opts=(-m);else opts=("$@");fi; free "$opts[@]"};f'  # Show sizes in MB
-alias gitu='git add . && git commit && git push'
+## Alias section
+source /usr/share/zsh/aliases/.zaliases
 
 # Theming section  
 autoload -U compinit colors zcalc
@@ -75,6 +72,9 @@ export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;36m'
 export LESS=-R
 
+
+# Import functions
+. /usr/share/zsh/functions/.zfunctions
 
 ## Plugins section: Enable fish style features
 # Use syntax highlighting
@@ -197,4 +197,21 @@ add-zsh-hook preexec mzc_termsupport_preexec
 # File and Dir colors for ls and other outputs
 export LS_OPTIONS='--color=auto'
 eval "$(dircolors -b)"
-alias ls='ls $LS_OPTIONS'
+alias ls='lsd $LS_OPTIONS'
+alias ls="${aliases[ls]:-lsd} -A" # show almost all (do not list implied . and ..)
+
+export ENABLE_CORRECTION="true"
+
+# bat colorize man pages
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+# set neovim as editor
+export EDITOR="nvim"
+export VISUAL="nvim"
+export USERFULLNAME="$(tr '[:lower:]' '[:upper:]' <<< ${USERNAME:0:1})${USERNAME:1}"
+
+if which nvidia-smi > /dev/null; then
+  export SMI='nvidia-smi'
+elif which rocm-smi > /dev/null; then
+  export SMI='rocm-smi'
+fi

@@ -1,0 +1,157 @@
+#!/usr/bin/env zsh
+
+
+alias df='f(){if test $# -eq 0;then opts=(-h);else opts=("$@");fi; df "$opts[@]"};f'      # Human-readable sizes
+alias free='f(){if test $# -eq 0;then opts=(-m);else opts=("$@");fi; free "$opts[@]"};f'  # Show sizes in MB
+
+# root privileges
+# alias doas="doas --"
+
+# Confirm before overwriting something
+alias cp='f(){fo=${1:--i}; shift; cp $fo $*};f' 
+#alias cp="cp -i"
+alias mv='mv -i'
+alias rm='rm -i'
+
+# Colorize grep output (good for log files)
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+# This is use with the bare git repo to key everything in sync
+# alias cs='config status' # Type cs to get the status of the bare repo
+# alias ca='config add' # Type ca file to add a file to the sync list
+# alias cc='config commit' # Type cc -m 'Updated file' to commit the modifications
+# alias cpush='config push' # Type cpush to push to master
+
+# fetch
+alias fetch='fastfetch'
+
+# git
+alias gitu='git add . && git commit && git push'
+alias addup='git add -u'
+alias addall='git add .'
+alias branch='git branch'
+alias checkout='git checkout'
+alias clone='git clone'
+alias commit='git commit -m'
+alias gfetch='git fetch'
+alias gpull='git pull origin'
+alias gpush='git push origin'
+alias gstat='git status'  # 'status' is a protected name so using 'stat' instead
+alias gtag='git tag'
+alias gnewtag='git tag -a'
+
+# docker
+alias dimgprune='docker image prune -a'
+alias dimgls='docker image ls'
+alias dpull='docker pull'
+alias drun='docker run'
+alias drunit='docker run -it'
+alias dbuild='docker build'
+alias dpush='docker push'
+alias dtag='docker tag'
+alias dlogin='docker login'
+alias dsearch='docker search'
+
+# docker-compose
+alias dcompose='docker-compose'
+alias dcomposeup='docker-compose up'
+alias dcomposedown='docker-compose down'
+
+# get error messages from journalctl
+alias jctl="journalctl -p 3 -xb"
+
+# ps
+alias psa="ps auxf"
+alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
+alias psmem='ps auxf | sort -nr -k 4'
+alias pscpu='ps auxf | sort -nr -k 3'
+
+# prefer gping instead of old boring ping
+alias ping='gping'
+
+alias py='python'
+
+# get fastest mirrors
+alias mirror="sudo reflector -f 30 -l 30 --number 10 --verbose --save /etc/pacman.d/mirrorlist"
+alias mirrord="sudo reflector --latest 50 --number 20 --sort delay --save /etc/pacman.d/mirrorlist"
+alias mirrors="sudo reflector --latest 50 --number 20 --sort score --save /etc/pacman.d/mirrorlist"
+alias mirrora="sudo reflector --latest 50 --number 20 --sort age --save /etc/pacman.d/mirrorlist"
+
+# pacaman and yay
+alias pc="sudo pacman"
+alias pcupdate="sudo pacman -Syu"
+alias pcrefresh="sudo pacman -Syyu"
+alias install='pamac install'
+# alias install='yay' # install or search packages
+# alias uninstall='yay -Rns' # install package
+# alias lsinstall='yay -Ps' # list install packages
+# alias update="yay -Syu --noconfirm" # update standard pkgs and AUR pkgs (yay)
+alias unlock='sudo rm /var/lib/pacman/db.lck'    # remove pacman lock
+alias cleanup='sudo pacman -Rns (pacman -Qtdq)'  # remove orphaned packages
+
+
+# list all availible commands
+alias lscmd='compgen -c'
+
+# Where am I?
+alias whereami='echo "You are currently here:" && pwd'
+
+# Who am I?
+alias whoami='echo -n "You are logged in as " && \whoami'
+
+# Correct your bad commands with thefuck !
+# eval "$(thefuck --alias)"
+# alias fuck='fuck -y'
+
+alias shutdown='sudo shutdown now'# Shutdown now !
+
+# Thanks!
+alias thanks='echo "Your welcome."'
+alias merci='echo "C´est tout naturel."'
+
+alias lol='echo "Hope it was funny..."' # Lol
+
+# [n]Vi[m]
+alias neovim='nvim'
+alias vim='nvim'
+alias vi='nvim'
+alias ed='nvim'
+
+# When clearing the screen, display something nice
+#alias clear='clear && ~/.zlogin'
+
+alias rm="trash -i" # Warn rm usage and use trash-cli instead
+
+# LSD
+#alias ls="lsd"
+
+# Bat
+alias cat="bat"
+alias re="bat"
+
+# XDG-Open
+alias open='xdg-open &>/dev/null'
+
+# Systemctl
+alias sys='systemctl'
+
+# Bare git alias
+# alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+alias tree='tree -a -I .git'
+
+# GladOS
+alias glados='fortune -s glados'
+
+# Go back further
+alias ....='../..'
+alias ......='../../..'
+
+# colortest
+alias colortest="/usr/share/zsh/scripts/base16-shell/colortest"
+
+#alias smi='watch ${SMI}'
+
+alias top='bpytop'

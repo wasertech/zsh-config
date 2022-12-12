@@ -1,0 +1,215 @@
+#!/usr/bin/env zsh
+banner=(
+" _____        __  "
+"/__  /  _____/ /_ "
+'  / /  / ___/ __ \'
+" / /__(__  ) / / /"
+"/____/____/_/ /_/ "
+)
+
+center_line_width='47'
+
+print_banner() {
+	clear
+    echo -e "\n"
+    for i in ${banner}; do
+        printf "%*s\n" $(( (${#i} + ${COLUMNS}) / 2)) "$i"
+    done
+    echo -e "\n"
+}
+
+#Center
+print_center() {
+    str=$1
+    str_len=$(echo $str | wc -c)
+    printf "%*s" $(( (${str_len} + ${COLUMNS}) / 2 )) $str
+    echo
+}
+
+bonjour() {
+	if [ -z "$USERFULLNAME" ]
+	then
+		  print_center "Bonjour"
+	else
+		  print_center "Bonjour $USERFULLNAME"
+	fi
+}
+
+print_center_with_banner() {
+    #clear
+	print_banner
+	print_center $1
+    echo
+}
+
+# List installed packages
+function lspkgs() {
+    LC_ALL=C pacman -Qi | awk '/^Name/{name=$3} /^Installed Size/{print $4$5, name}' | sort -h --reverse | less
+}
+
+# Check if command is installed
+function isinstalled() {
+    if [ $# -eq 0 ]
+    then
+        echo "Missing argument program/command to be checked if installed."
+        return 127
+    fi
+    if compgen -c | grep "^${1}$" > /dev/null; then
+        echo -n "${1} is installed at "
+        which ${1}
+        return 0
+    else
+        echo "${1} is not installed"
+        return 1
+    fi
+}
+
+# Help
+function help() {
+    if [ $# -eq 0 ]
+    then
+        echo "Type \`help \$CMD\` to get help about a specific command \$CMD."
+        echo
+        echo "To see a list of all availible commands, type:"
+        echo "$  lscmd"
+        echo
+        echo "Additionnaly you can get help about the following topics."
+        run-help | tail -n +2
+        echo
+        echo "Type \`help \$TOPIC\` to get help about a topic \$TOPIC."
+        echo
+        echo "To see all availible aliases, type:"
+        echo "$  alias"
+        echo
+        echo "To see a list of all installed packages, type:"
+        echo "$  lspkgs"
+        echo
+        echo "Here are some commonly used commands."
+        echo
+        echo "whereami: To know where you are."
+        echo
+        echo "whoami: To know who you are."
+        echo
+        echo "ls: To list everything where you are."
+        echo
+        echo "cd: To change directory."
+        echo
+        echo "re: To read a file."
+        echo
+        echo "ed: To edit a file."
+        echo
+        echo "extract: To extract an archive."
+        echo
+        echo "open: To open with the approriate program."
+        echo
+        echo "top: To show a top view of the system and its processes."
+        echo
+        echo "fetch: To show a detailed fetch of this system."
+        echo
+        echo "ping: To ping a server."
+        echo
+        echo "shutdown: To shudown the system."
+        echo
+        return 0
+    fi
+
+	( tldr $@ ) || ( run-help $@ ) || ( $@ --help ) || echo "Sorry cannot help you with $@." 
+}
+
+# install_requirements() {
+# 	print_banner
+#     bonjour
+#     if [ -z "$USERFULLNAME" ]
+# 	then 
+#     	print_center "Where is the admin?"
+#     else
+#     	print_center "Glad to see you back"
+#     	echo
+#     	print_center "Security requires you to prove your ID"
+#     	echo
+#     	print_center "I'm sure you understand"
+#     fi;
+#     echo
+#     sudo pacman -Syyuq neovim direnv
+#     print_center_with_banner "Enableing AUR"
+#     sudo sed -Ei '/EnableAUR/s/^#//' /etc/pamac.conf
+#     print_center_with_banner "Yay!"
+#     sudo pamac install yay
+#     print_center_with_banner "Installing packages"
+#     yay -Sq \
+# 		lsd \
+# 		bat \
+# 		gping \
+# 		doas \
+# 		thefuck
+	
+# 	print_center_with_banner "Everything is up to date"
+# }
+
+# typefx 0.01 ${greet}
+typefx() {
+    delay=$1
+    string=$2
+	
+    for char in $(seq 0 $(expr length "${string}")); do
+		out=$(echo -e "${string:0:$char}")
+		# Redraw screen
+		print_center_with_banner $out
+        #echo -n "${string:$char:1}"
+		#printf "%*s" $(( (${char} + ${COLUMNS}) / 2 )) $out
+        sleep $delay
+    done
+}
+
+### Function extract for common file formats ###
+SAVEIFS=$IFS
+IFS=$(echo -en "\n\b")
+
+function extract {
+ if [ -z "$1" ]; then
+    # display usage if no parameters given
+    echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+    echo "       extract <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
+ else
+    for n in "$@"
+    do
+      if [ -f "$n" ] ; then
+          case "${n%,}" in
+            *.cbt|*.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
+                         tar xvf "$n"       ;;
+            *.lzma)      unlzma ./"$n"      ;;
+            *.bz2)       bunzip2 ./"$n"     ;;
+            *.cbr|*.rar)       unrar x -ad ./"$n" ;;
+            *.gz)        gunzip ./"$n"      ;;
+            *.cbz|*.epub|*.zip)       unzip ./"$n"       ;;
+            *.z)         uncompress ./"$n"  ;;
+            *.7z|*.arj|*.cab|*.cb7|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.pkg|*.rpm|*.udf|*.wim|*.xar)
+                         7z x ./"$n"        ;;
+            *.xz)        unxz ./"$n"        ;;
+            *.exe)       cabextract ./"$n"  ;;
+            *.cpio)      cpio -id < ./"$n"  ;;
+            *.cba|*.ace)      unace x ./"$n"      ;;
+            *)
+                         echo "extract: '$n' - unknown archive method"
+                         return 1
+                         ;;
+          esac
+      else
+          print_center_with_banner "'$n' - file does not exist"
+          return 1
+      fi
+    done
+fi
+}
+
+IFS=$SAVEIFS
+
+
+function smi() {
+    if [ -z $SMI ]; then
+        echo "No SMI found."
+        return 1
+    fi
+
+    watch ${SMI}
+}
