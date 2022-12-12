@@ -152,10 +152,13 @@ alias ......='../../..'
 # colortest
 alias colortest="/usr/share/zsh/scripts/base16-shell/colortest"
 
-#alias smi='watch ${SMI}'
+#alias smi='watch ${SMI}' # moved to zfunctions
 
 alias top='bpytop'
 
 alias newenv='echo "#Those variables will be availible inside this directory´s environment.\n#Use the following syntax to add more:\n#export NAME=value" > .envrc && echo "Environment has been bootstrapped with \`./.envrc\`.\nType \`allowenv\` (or \`direnv allow .\`) when ready.\n\nAssistant: direnv will now complain about the fact that you have not yet authorized \`./.envrc\` in the current directory." || echo "Could not bootstrap environment. Current directory might not be writable with current permissions."'
 alias allowenv='echo "Authorizing current directory´s env.\nType \`denyenv\` to disable it."; direnv allow .'
 alias denyenv='direnv deny . && echo "Current directory´s env has been denied."'
+
+alias makesrcinfo='makepkg --printsrcinfo > .SRCINFO'
+alias makesingedpkg='makepkg -sr --sign -f'

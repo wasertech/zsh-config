@@ -215,3 +215,7 @@ if which nvidia-smi > /dev/null; then
 elif which rocm-smi > /dev/null; then
   export SMI='rocm-smi'
 fi
+
+# Keep this at the end of the rc file.
+# Direnv hook for ZSH
+eval "$(direnv hook zsh)"
