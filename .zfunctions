@@ -108,12 +108,14 @@ function help() {
         echo
         echo "ping: To ping a server."
         echo
+        echo "newenv: To create a new virtualenv environment for the current directory."
+        echo
         echo "shutdown: To shudown the system."
         echo
         return 0
     fi
 
-	( tldr $@ ) || ( run-help $@ ) || ( $@ --help ) || echo "Sorry cannot help you with $@." 
+	( tldr $@ ) || ( run-help $@ ) || ( $@ --help ) || echo "Sorry cannot help you with $@.\nTry with \`howdoi $@\` or \`ddgr $@\`." 
 }
 
 # install_requirements() {
